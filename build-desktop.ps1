@@ -34,6 +34,9 @@ try {
     $patchFile = Join-Path $PSScriptRoot $patch
     git apply --reverse --check $patchFile 2>$null
     if ($LASTEXITCODE -ne 0) { Invoke-Native git @('apply','--whitespace=nowarn',$patchFile) }
+    $uiPatch = Join-Path $PSScriptRoot 'budtune-ui.patch'
+    git apply --reverse --check $uiPatch 2>$null
+    if ($LASTEXITCODE -ne 0) { Invoke-Native git @('apply','--whitespace=nowarn',$uiPatch) }
     if ($TestProfiles) {
         Invoke-Native cargo @('test','--locked','-p','openscq30-lib','--lib','--features','bundled-dependencies','devices::soundcore')
     }

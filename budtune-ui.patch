@@ -1,0 +1,86 @@
+diff --git a/gui/src/device_selection.rs b/gui/src/device_selection.rs
+index f2341a8..faff562 100644
+--- a/gui/src/device_selection.rs
++++ b/gui/src/device_selection.rs
+@@ -56,16 +56,29 @@ impl DeviceSelectionModel {
+             widget::column(
+                 iter::once(
+                     widget::row![
+-                        widget::text::title2(fl!("select-device")).width(Length::Fill),
+-                        widget::button::standard(fl!("add-device")).on_press(Message::AddDevice),
++                        widget::text::title1("Your devices").width(Length::Fill),
++                        widget::button::suggested(fl!("add-device")).on_press(Message::AddDevice),
+                     ]
+                     .align_y(alignment::Vertical::Center)
+                     .into(),
+                 )
++                .chain(self.paired_devices.is_empty().then(|| {
++                    widget::container(
++                        widget::column![
++                            widget::text::heading("Connect your first device"),
++                            widget::text::body("Pair your earbuds in Bluetooth settings, then add them here."),
++                        ]
++                        .spacing(8),
++                    )
++                    .width(Length::Fill)
++                    .padding(24)
++                    .class(cosmic::style::Container::List)
++                    .into()
++                }))
+                 .chain(self.items()),
+             )
+-            .padding([0, 10])
+-            .spacing(10),
++            .padding([24, 28])
++            .spacing(16),
+         )
+         .width(Length::Fill)
+         .height(Length::Fill)
+@@ -86,11 +99,11 @@ impl DeviceSelectionModel {
+                     .push_maybe(
+                         device
+                             .is_demo
+-                            .then(|| fl!("demo-mode").to_uppercase())
++                            .then(|| fl!("demo-mode"))
+                             .map(widget::text::body),
+                     )
+                     .width(Length::Fill),
+-                    widget::button::destructive(fl!("remove"))
++                    widget::button::standard(fl!("remove"))
+                         .on_press(Message::RemoveDevice(index)),
+                     widget::space().width(Length::Fixed(6f32)),
+                     widget::button::suggested(fl!("connect"))
+@@ -99,7 +112,7 @@ impl DeviceSelectionModel {
+                 .align_y(alignment::Vertical::Center)
+                 .apply(widget::container)
+                 .width(Length::Fill)
+-                .padding(16)
++                .padding(20)
+                 .class(cosmic::style::Container::List)
+                 .into()
+             })
+diff --git a/gui/src/device_settings.rs b/gui/src/device_settings.rs
+index 5226daf..2e64bb2 100644
+--- a/gui/src/device_settings.rs
++++ b/gui/src/device_settings.rs
+@@ -591,7 +591,19 @@ impl DeviceSettingsModel {
+             }
+         }
+ 
+-        widget::scrollable(section).into()
++        widget::scrollable(
++            widget::column![
++                widget::container(widget::text::title2(self.device.0.model().translate()))
++                    .width(Length::Fill)
++                    .padding([16, 20])
++                    .class(cosmic::style::Container::List),
++                section,
++            ]
++            .spacing(14)
++            .padding([12, 18]),
++        )
++        .height(Length::Fill)
++        .into()
+     }
+ 
+     fn view_setting<'a>(&'a self, setting: &'a SettingUiState) -> SettingDisplayKind<'a, Message> {

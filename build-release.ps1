@@ -15,6 +15,9 @@ try {
     $patch = Join-Path $PSScriptRoot 'budtune.patch'
     git apply --reverse --check $patch 2>$null
     if ($LASTEXITCODE -ne 0) { Run git @('apply','--whitespace=nowarn',$patch) }
+    $uiPatch = Join-Path $PSScriptRoot 'budtune-ui.patch'
+    git apply --reverse --check $uiPatch 2>$null
+    if ($LASTEXITCODE -ne 0) { Run git @('apply','--whitespace=nowarn',$uiPatch) }
     if ($TestProfiles) {
         foreach ($model in 'a3947','a3949','a3954','a3957','a3968','d1202') {
             Run cargo @('test','--locked','-p','openscq30-lib','--lib','--features','bundled-dependencies',$model)
