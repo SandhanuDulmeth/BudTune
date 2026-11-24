@@ -1,24 +1,34 @@
-# BudTune for Windows
+# BudTune
 
-A free, unofficial Windows x64 companion for Soundcore R50i, P20i and P25i (A3949). Choose one of 22 earbud EQ presets, switch gaming mode and touch tones, and read battery, charging and firmware for each side. The app talks to the paired earbuds over Windows Bluetooth RFCOMM. Changes are confirmed by requesting fresh device state. R50i NC uses a different protocol and is outside this release.
+Free, open-source Windows companion for Soundcore earbuds. BudTune's multi-model edition uses the Rust desktop interface and device drivers from [OpenSCQ30 v2.13.0](https://github.com/Oppzippy/OpenSCQ30/tree/c730b832f8d409b215fcd7f59c07c8a624dea9aa), with its own settings directory, model guidance and release channel.
 
-**[Download BudTune for Windows x64](https://github.com/SandhanuDulmeth/BudTune/raw/refs/heads/main/BudTune-Windows-x64.zip)** · Free portable ZIP
+**[Download BudTune.exe](https://github.com/SandhanuDulmeth/BudTune/releases/latest/download/BudTune.exe)** · [All releases and SHA-256 checksums](https://github.com/SandhanuDulmeth/BudTune/releases)
 
-## Start
+## Use
 
-1. Extract the whole ZIP. Open BudTune.exe on Windows 10 (version 1809 or later) or Windows 11 x64 with .NET Framework 4.8.
-2. Pair the earbuds in Windows Bluetooth settings. Take them out of the case, select Scan, choose the device and click Connect.
-3. Select a preset and click Apply preset, or click Gaming mode or Touch tone to switch it. Refresh requests current battery and firmware readings.
-4. If the control service is busy, close the mobile companion app, disconnect the earbuds from your phone and reconnect in BudTune.
+1. Pair the earbuds in Windows Bluetooth settings and open BudTune.exe.
+2. Add a device, choose the exact model, then select the paired earbuds. Leave demo mode off to control hardware.
+3. Open the connected device. The available settings come from its driver and current device state. Use About to find the latest release.
 
-## Build
+## Requested models
 
-Run build.ps1 in PowerShell on Windows x64 with .NET Framework 4.8. The build uses the Windows metadata and the framework compiler already installed on the machine.
+| Profiles included in the multi-model build | ID |
+|---|---|
+| Liberty 5 | A3957 |
+| Liberty 4 Pro | A3954 |
+| Liberty 4 NC | A3947 |
+| P31i | D1202 |
+| P20i and R50i | A3949 |
+| Sport X20 | A3968 |
 
-## License and credits
+Liberty 5 Pro, K20i, AeroClip 2 and AeroFit Pro await device-specific drivers. Never select a similarly named model for these earbuds. Physical testing of the BudTune distribution is pending. Feature availability varies by firmware.
 
-GPL-3.0-or-later. See COPYING. A3949 protocol details and EQ data are based on Kyle Scheuing and contributors' [OpenSCQ30](https://github.com/Oppzippy/OpenSCQ30), specifically lib/src/devices/soundcore/a3949.rs and its common EQ and DRC structures. The C# UI and transport are implemented for BudTune. Independent community project, unaffiliated with Anker or Soundcore.
+## Build and release
 
-## Preview status
+On Windows x64 with Git, stable Rust and Visual Studio C++ build tools, run `./build-release.ps1 -TestProfiles` in PowerShell 7. The script fetches the pinned GPL source, applies `budtune.patch`, runs model tests and builds BudTune.exe. C# files and build.ps1 belong to the original A3949 preview. The current multi-model executable uses Rust.
 
-This is an unsigned preview. Compilation and EQ packet fixture checks have been performed. Physical-earbud compatibility still needs testing. Some managed Windows PCs restrict unsigned applications.
+Every push to main triggers the Windows release workflow. A successful build publishes a versioned GitHub Release. The download URL follows the latest successful release. Existing copies can be replaced manually.
+
+## License
+
+GNU GPL-3.0-or-later. The upstream interface and device drivers are by Kyle Scheuing and OpenSCQ30 contributors. See COPYING and the pinned source above. BudTune is independent of Soundcore and Anker.

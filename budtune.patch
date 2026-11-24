@@ -1,0 +1,68 @@
+diff --git a/gui/src/add_device.rs b/gui/src/add_device.rs
+index 67f8018..4cf3a69 100644
+--- a/gui/src/add_device.rs
++++ b/gui/src/add_device.rs
+@@ -91,6 +91,8 @@ impl AddDeviceModel {
+         widget::column![
+             widget::column![
+                 widget::text::title2(fl!("select-device-model")),
++                widget::text("Pair in Windows Bluetooth settings first. Choose the exact model printed on your case."),
++                widget::text("Liberty 5 Pro, K20i, AeroClip 2 and AeroFit Pro do not yet have BudTune device profiles."),
+                 widget::search_input(fl!("device-model"), &ui_model.search_query)
+                     .id(ui_model.search_widget_id.clone())
+                     .on_input(Message::SetDeviceModelSearchQuery),
+diff --git a/gui/src/app.rs b/gui/src/app.rs
+index 7f5081e..7c7f753 100644
+--- a/gui/src/app.rs
++++ b/gui/src/app.rs
+@@ -152,7 +152,7 @@ impl Application for AppModel {
+     type Flags = AppFlags;
+     type Message = Message;
+ 
+-    const APP_ID: &'static str = "com.oppzippy.OpenSCQ30";
++    const APP_ID: &'static str = "io.github.SandhanuDulmeth.BudTune";
+ 
+     fn core(&self) -> &Core {
+         &self.core
+@@ -164,12 +164,15 @@ impl Application for AppModel {
+ 
+     fn init(core: Core, flags: Self::Flags) -> (Self, cosmic::app::Task<Self::Message>) {
+         let about = widget::about::About::default()
+-            .name(fl!("openscq30"))
++            .name(String::from("BudTune"))
+             .icon(crate::icons::openscq30())
+             .version(env!("CARGO_PKG_VERSION"))
+             .author(env!("CARGO_PKG_AUTHORS"))
+             .license(env!("CARGO_PKG_LICENSE"))
+-            .links([(env!("CARGO_PKG_REPOSITORY"), env!("CARGO_PKG_REPOSITORY"))]);
++            .links([
++                ("Download the latest BudTune", "https://github.com/SandhanuDulmeth/BudTune/releases/latest"),
++                ("Device engine and contributors", env!("CARGO_PKG_REPOSITORY")),
++            ]);
+ 
+         let session = Arc::new(
+             futures::executor::block_on(OpenSCQ30Session::new(
+@@ -644,8 +647,8 @@ impl AppModel {
+ 
+     pub fn update_title(&mut self) -> cosmic::app::Task<Message> {
+         if let Some(id) = self.core.main_window_id() {
+-            self.set_header_title(fl!("openscq30"));
+-            self.set_window_title(fl!("openscq30"), id)
++            self.set_header_title(String::from("BudTune"));
++            self.set_window_title(String::from("BudTune"), id)
+         } else {
+             Task::none()
+         }
+diff --git a/gui/src/main.rs b/gui/src/main.rs
+index b13d254..431abf1 100644
+--- a/gui/src/main.rs
++++ b/gui/src/main.rs
+@@ -42,7 +42,7 @@ fn main() -> anyhow::Result<()> {
+ 
+     let config_dir = dirs::config_dir()
+         .expect("failed to find config dir")
+-        .join("openscq30");
++        .join("BudTune");
+ 
+     let config = config::Config::new(config_dir.join("openscq30-gui-config.toml")).unwrap();
+ 

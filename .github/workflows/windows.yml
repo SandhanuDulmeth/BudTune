@@ -1,0 +1,45 @@
+name: Release Windows app
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: budtune-windows-release
+  cancel-in-progress: true
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 100
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable long paths
+        run: git config --global core.longpaths true
+      - name: Install stable Rust
+        run: rustup update stable --no-self-update
+      - name: Cache Rust dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            engine-src/target
+          key: windows-rust-v2.13.0-${{ hashFiles('budtune.patch', 'build-release.ps1') }}
+      - name: Build and test device profiles
+        shell: pwsh
+        env:
+          RUSTUP_TOOLCHAIN: stable
+        run: ./build-release.ps1 -TestProfiles
+      - name: Publish the tested executable
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "v0.2.${{ github.run_number }}"
+          $sha = (Get-FileHash BudTune.exe).Hash
+          $notes = "Free Windows x64 portable download. Open BudTune.exe. Built from $env:GITHUB_SHA with OpenSCQ30 v2.13.0. SHA-256: $sha"
+          gh release create $tag BudTune.exe --latest --target $env:GITHUB_SHA --title "BudTune $tag for Windows" --notes $notes
+          exit $LASTEXITCODE
