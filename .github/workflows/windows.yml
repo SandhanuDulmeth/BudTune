@@ -2,6 +2,10 @@ name: Release Windows app
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'index.html'
+      - 'sitemap.xml'
+      - 'google*.html'
   workflow_dispatch:
 permissions:
   contents: read
