@@ -1,45 +1,80 @@
-# BudTune
+<h1 align="center">BudTune</h1>
 
-Free, open-source Windows companion for Soundcore earbuds. BudTune's multi-model edition uses the Rust desktop interface and device drivers from [OpenSCQ30 v2.13.0](https://github.com/Oppzippy/OpenSCQ30/tree/c730b832f8d409b215fcd7f59c07c8a624dea9aa), with its own settings directory, model guidance and release channel.
+<p align="center"><strong>Soundcore earbuds, controlled from your desktop.</strong><br>Free and open source. Pair over Bluetooth and manage the controls available on your model.</p>
 
-**[Download BudTune.exe](https://github.com/SandhanuDulmeth/BudTune/releases/latest/download/BudTune.exe)** · [All releases and SHA-256 checksums](https://github.com/SandhanuDulmeth/BudTune/releases)
+<p align="center">
+  <a href="https://github.com/SandhanuDulmeth/BudTune/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/SandhanuDulmeth/BudTune?style=flat-square&color=147d69"></a>
+  <a href="COPYING"><img alt="License GPL-3.0-or-later" src="https://img.shields.io/badge/license-GPL--3.0--or--later-334155?style=flat-square"></a>
+  <a href="https://github.com/SandhanuDulmeth/BudTune/actions"><img alt="Windows build status" src="https://github.com/SandhanuDulmeth/BudTune/actions/workflows/windows.yml/badge.svg"></a>
+</p>
 
-## Use
+<p align="center">
+  <a href="#downloads">Downloads</a> · <a href="#device-compatibility">Device compatibility</a> · <a href="#getting-started">Getting started</a> · <a href="#contribute">Contribute</a>
+</p>
 
-1. Pair the earbuds in Windows Bluetooth settings and open BudTune.exe.
-2. Add a device, choose the exact model, then select the paired earbuds. Leave demo mode off to control hardware.
-3. Open the connected device. The available settings come from its driver and current device state. Use About to find the latest release.
+## What you can control
 
-## Requested models
+- **Sound.** Pick an EQ preset and switch noise control modes where supported.
+- **Earbud settings.** View battery and firmware details, or change available touch controls.
+- **Demo mode.** Explore the interface with a simulated device before pairing your earbuds.
 
-| Profiles included in the multi-model build | ID |
-|---|---|
+BudTune uses a device profile to show the controls available for the model and firmware you connect.
+
+## Downloads
+
+| Platform | Download | Status |
+| --- | --- | --- |
+| Windows x64 | **[BudTune.exe](https://github.com/SandhanuDulmeth/BudTune/releases/latest/download/BudTune.exe)** · [SourceForge mirror](https://sourceforge.net/projects/budtune/files/) | Portable preview. The current public EXE is unsigned. Windows Smart App Control may block it. [Code signing status](CODE_SIGNING.md) |
+| Linux x64 | [Linux preview artifacts](https://github.com/SandhanuDulmeth/BudTune/actions/workflows/desktop-preview.yml?query=is%3Asuccess) | Built for Ubuntu 24.04 x64. Hardware testing welcome. |
+| macOS | [Apple Silicon preview artifacts](https://github.com/SandhanuDulmeth/BudTune/actions/workflows/desktop-preview.yml?query=is%3Asuccess) | Apple Silicon preview. The app bundle is ad-hoc signed and awaits notarization. |
+
+For Linux or macOS, sign in to GitHub, open a successful run and choose your platform under **Artifacts**. Windows version history and SHA-256 checksums are on [GitHub Releases](https://github.com/SandhanuDulmeth/BudTune/releases).
+
+## Device compatibility
+
+| Soundcore model | Model code |
+| --- | --- |
 | Liberty 5 | A3957 |
 | Liberty 4 Pro | A3954 |
 | Liberty 4 NC | A3947 |
 | P31i | D1202 |
-| P20i and R50i | A3949 |
+| P20i / R50i | A3949 |
 | Sport X20 | A3968 |
 
-Liberty 5 Pro, K20i, AeroClip 2 and AeroFit Pro await device-specific drivers. Never select a similarly named model for these earbuds. Physical testing of the BudTune distribution is pending. Feature availability varies by firmware.
+These profiles are included in the multi-model build. Hardware coverage still needs testing. Liberty 5 Pro, K20i, AeroClip 2 and AeroFit Pro are awaiting device-specific drivers. Use the exact model name and code when selecting a device.
 
-## Build and release
+## Getting started
 
-On Windows x64 with Git, stable Rust and Visual Studio C++ build tools, run `./build-release.ps1 -TestProfiles` in PowerShell 7. The script fetches the pinned GPL source, applies `budtune.patch`, runs model tests and builds BudTune.exe. C# files and build.ps1 belong to the original A3949 preview. The current multi-model executable uses Rust.
+1. Pair the earbuds in your system Bluetooth settings.
+2. Open BudTune and choose **Add Device**.
+3. Select the exact model, then choose the paired device and connect to see its settings.
 
-Changes to the Windows build trigger CI. Public release publication requires a manual signed build. The download URL follows the latest published release. Existing copies can be replaced manually.
+To explore without earbuds, enable **Demo Mode** when adding a device.
 
-## License
+## Contribute
 
-GNU GPL-3.0-or-later. The upstream interface and device drivers are by Kyle Scheuing and OpenSCQ30 contributors. See COPYING and the pinned source above. BudTune is independent of Soundcore and Anker.
+**Have a pair of Soundcore earbuds?** A compatibility report is a useful first contribution. Include the model code, firmware, OS and controls you tried. Keep serial numbers and Bluetooth addresses private.
 
-## Contribute and test other platforms
+| I want to… | Start here |
+| --- | --- |
+| Test on Linux or macOS | [Cross-platform testing thread](https://github.com/SandhanuDulmeth/BudTune/issues/1) |
+| Report a missing model or Bluetooth issue | [Device compatibility form](https://github.com/SandhanuDulmeth/BudTune/issues/new/choose) |
+| Pick up an issue or submit a patch | [Open issues](https://github.com/SandhanuDulmeth/BudTune/issues) · [Contribution guide](CONTRIBUTING.md) |
+| Share the project | [BudTune website](https://sandhanudulmeth.github.io/BudTune/) |
 
-Contributors from any country are welcome. Start with the [contribution guide](CONTRIBUTING.md) or [report a device](https://github.com/SandhanuDulmeth/BudTune/issues/new/choose).
+Contributors from anywhere are welcome. English is the shared language for issues and pull requests. A short report with clear steps is enough to start.
 
-Linux x64 and Apple Silicon macOS builds are experimental. Find successful preview artifacts in [GitHub Actions](https://github.com/SandhanuDulmeth/BudTune/actions/workflows/desktop-preview.yml). Earbud functionality on these platforms still needs hardware testing.
+## Build from source
 
-## Code signing policy
+Install Git, stable Rust, PowerShell 7 and the platform dependencies in the [contribution guide](CONTRIBUTING.md). From the repository root:
 
-The existing Windows preview is unsigned. See the [code signing policy](CODE_SIGNING.md) for the trusted signing workflow and its current status.
+```powershell
+pwsh -File ./build-desktop.ps1 -TestProfiles
+```
+
+The build fetches pinned OpenSCQ30 source and applies the BudTune patches. Windows produces `BudTune.exe`. Linux and macOS produce preview archives in `dist/`. The C# source is retained from the original A3949 preview.
+
+## License and credits
+
+[GPL-3.0-or-later](COPYING). BudTune is an independent community project based on [OpenSCQ30](https://github.com/Oppzippy/OpenSCQ30) by Kyle Scheuing and contributors. BudTune is unaffiliated with Anker or Soundcore. See the [code signing policy](CODE_SIGNING.md) for release signing details.
 
