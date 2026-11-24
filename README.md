@@ -27,8 +27,19 @@ Liberty 5 Pro, K20i, AeroClip 2 and AeroFit Pro await device-specific drivers. N
 
 On Windows x64 with Git, stable Rust and Visual Studio C++ build tools, run `./build-release.ps1 -TestProfiles` in PowerShell 7. The script fetches the pinned GPL source, applies `budtune.patch`, runs model tests and builds BudTune.exe. C# files and build.ps1 belong to the original A3949 preview. The current multi-model executable uses Rust.
 
-Every push to main triggers the Windows release workflow. A successful build publishes a versioned GitHub Release. The download URL follows the latest successful release. Existing copies can be replaced manually.
+Changes to the Windows build trigger CI. Public release publication requires a manual signed build. The download URL follows the latest published release. Existing copies can be replaced manually.
 
 ## License
 
 GNU GPL-3.0-or-later. The upstream interface and device drivers are by Kyle Scheuing and OpenSCQ30 contributors. See COPYING and the pinned source above. BudTune is independent of Soundcore and Anker.
+
+## Contribute and test other platforms
+
+Contributors from any country are welcome. Start with the [contribution guide](CONTRIBUTING.md) or [report a device](https://github.com/SandhanuDulmeth/BudTune/issues/new/choose).
+
+Linux x64 and Apple Silicon macOS builds are experimental. Find successful preview artifacts in [GitHub Actions](https://github.com/SandhanuDulmeth/BudTune/actions/workflows/desktop-preview.yml). Earbud functionality on these platforms still needs hardware testing.
+
+## Code signing policy
+
+The existing Windows preview is unsigned. See the [code signing policy](CODE_SIGNING.md) for the trusted signing workflow and its current status.
+

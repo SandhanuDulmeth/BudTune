@@ -6,7 +6,7 @@ index 67f8018..4cf3a69 100644
          widget::column![
              widget::column![
                  widget::text::title2(fl!("select-device-model")),
-+                widget::text("Pair in Windows Bluetooth settings first. Choose the exact model printed on your case."),
++                widget::text("Pair in system Bluetooth settings first. Choose the exact model printed on your case."),
 +                widget::text("Liberty 5 Pro, K20i, AeroClip 2 and AeroFit Pro do not yet have BudTune device profiles."),
                  widget::search_input(fl!("device-model"), &ui_model.search_query)
                      .id(ui_model.search_widget_id.clone())

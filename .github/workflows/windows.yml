@@ -6,7 +6,17 @@ on:
       - 'index.html'
       - 'sitemap.xml'
       - 'google*.html'
+      - '**/*.md'
+      - 'budtune-macos.patch'
+      - 'build-desktop.ps1'
+      - '.github/workflows/desktop-preview.yml'
+      - '.github/ISSUE_TEMPLATE/**'
   workflow_dispatch:
+    inputs:
+      publish_signed:
+        type: boolean
+        default: false
+        description: 'Request approval to sign and publish this Windows release'
 permissions:
   contents: read
 concurrency:
@@ -18,6 +28,7 @@ jobs:
     timeout-minutes: 100
     permissions:
       contents: write
+      actions: read
     steps:
       - uses: actions/checkout@v4
       - name: Enable long paths
@@ -37,13 +48,37 @@ jobs:
         env:
           RUSTUP_TOOLCHAIN: stable
         run: ./build-release.ps1 -TestProfiles
-      - name: Publish the tested executable
+      - uses: actions/upload-artifact@v4
+        id: windows-artifact
+        with:
+          name: BudTune-Windows-x64
+          path: BudTune.exe
+          if-no-files-found: error
+      - name: Request approved Windows signing
+        if: github.ref == 'refs/heads/main' && inputs.publish_signed == true
+        uses: SignPath/github-action-submit-signing-request@c92b958760219087e01f8d67a1669ed57afe2627
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG }}
+          artifact-configuration-slug: ${{ vars.SIGNPATH_ARTIFACT_SLUG }}
+          github-artifact-id: ${{ steps.windows-artifact.outputs.artifact-id }}
+          wait-for-completion-timeout-in-seconds: '2400'
+          output-artifact-directory: signed
+      - name: Publish the signed executable
+        if: github.ref == 'refs/heads/main' && inputs.publish_signed == true
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          $file = 'signed/BudTune.exe'
+          $signature = Get-AuthenticodeSignature $file
+          if ($signature.Status -ne 'Valid') {
+            throw "Windows signature failed verification: $($signature.Status)"
+          }
           $tag = "v0.2.${{ github.run_number }}"
-          $sha = (Get-FileHash BudTune.exe).Hash
-          $notes = "Free Windows x64 portable download. Open BudTune.exe. Built from $env:GITHUB_SHA with OpenSCQ30 v2.13.0. SHA-256: $sha"
-          gh release create $tag BudTune.exe --latest --target $env:GITHUB_SHA --title "BudTune $tag for Windows" --notes $notes
+          $sha = (Get-FileHash $file).Hash
+          $notes = "Free Windows x64 portable download. See CODE_SIGNING.md in the repository. Built from $env:GITHUB_SHA. SHA-256: $sha"
+          gh release create $tag $file --latest --target $env:GITHUB_SHA --title "BudTune $tag for Windows" --notes $notes
           exit $LASTEXITCODE
