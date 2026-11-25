@@ -1,0 +1,9 @@
+engine-src/
+engine-linux/
+engine-macos/
+dist/
+ui/node_modules/
+ui/dist/
+src-tauri/target/
+*.exe
+!BudTune-Windows-x64.zip

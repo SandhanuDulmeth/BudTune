@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/api.ts","./src/main.tsx","./src/types.ts","./src/components/adddevicemodal.tsx","./src/components/ambientstudio.tsx","./src/components/bluetoothradar.tsx","./src/components/earbudvisual.tsx","./src/components/equalizerstudio.tsx","./src/components/genericsettingcontrol.tsx"],"version":"5.8.3"}

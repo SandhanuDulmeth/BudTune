@@ -16,7 +16,6 @@
 
 - **Sound.** Pick an EQ preset and switch noise control modes where supported.
 - **Earbud settings.** View battery and firmware details, or change available touch controls.
-- **Demo mode.** Explore the interface with a simulated device before pairing your earbuds.
 
 BudTune uses a device profile to show the controls available for the model and firmware you connect.
 
@@ -45,11 +44,9 @@ These profiles are included in the multi-model build. Hardware coverage still ne
 
 ## Getting started
 
-1. Pair the earbuds in your system Bluetooth settings.
-2. Open BudTune and choose **Add Device**.
-3. Select the exact model, then choose the paired device and connect to see its settings.
-
-To explore without earbuds, enable **Demo Mode** when adding a device.
+1. On Windows, open BudTune and choose **Scan devices**. Put new earbuds in pairing mode so they appear in the scan. On Linux and macOS, pair the earbuds in system Bluetooth settings first.
+2. Choose your earbuds. If BudTune asks for a device profile, select the exact model code printed on the earbuds or case.
+3. Connect to see the settings available for your model.
 
 ## Contribute
 
@@ -64,15 +61,23 @@ To explore without earbuds, enable **Demo Mode** when adding a device.
 
 Contributors from anywhere are welcome. English is the shared language for issues and pull requests. A short report with clear steps is enough to start.
 
-## Build from source
+## Build and run from source
 
-Install Git, stable Rust, PowerShell 7 and the platform dependencies in the [contribution guide](CONTRIBUTING.md). From the repository root:
+Install Git, stable Rust, Node.js 22+, PowerShell 7, and the platform dependencies in the [contribution guide](CONTRIBUTING.md) (on Linux, install `libwebkit2gtk-4.1-dev`, `libdbus-1-dev`, `libudev-dev`, and `libayatana-appindicator3-dev`).
+
+To launch the desktop app directly without building a release package:
+
+```powershell
+./run-dev.ps1
+```
+
+To test the Soundcore device profiles and build the desktop package for your OS (Windows, Linux, or macOS):
 
 ```powershell
 pwsh -File ./build-desktop.ps1 -TestProfiles
 ```
 
-The build fetches pinned OpenSCQ30 source and applies the BudTune patches. Windows produces `BudTune.exe`. Linux and macOS produce preview archives in `dist/`. The C# source is retained from the original A3949 preview.
+The build fetches the pinned OpenSCQ30 engine (`c941bc465786e8ec8d66367efb263e3df62ed9d4`) into `engine-src/`, compiles the React + Tauri v2 desktop app, and outputs `BudTune.exe` on Windows or preview archives in `dist/` on Linux and macOS.
 
 ## License and credits
 

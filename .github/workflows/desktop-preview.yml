@@ -1,10 +1,10 @@
 name: Build Linux and macOS previews
 on:
   pull_request:
-    paths: ['build-desktop.ps1', 'budtune*.patch', '.github/workflows/desktop-preview.yml']
+    paths: ['ui/**', 'src-tauri/**', 'build-desktop.ps1', '.github/workflows/desktop-preview.yml']
   push:
     branches: [main]
-    paths: ['build-desktop.ps1', 'budtune*.patch', '.github/workflows/desktop-preview.yml']
+    paths: ['ui/**', 'src-tauri/**', 'build-desktop.ps1', '.github/workflows/desktop-preview.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -22,19 +22,19 @@ jobs:
     timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Install Linux dependencies
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y pkg-config libdbus-1-dev libxkbcommon-dev libudev-dev
-      - name: Verify target architecture
-        shell: bash
         run: |
-          case "$RUNNER_OS:$(uname -m)" in
-            Linux:x86_64|macOS:arm64) ;;
-            *) echo "Unexpected host architecture"; exit 1 ;;
-          esac
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libdbus-1-dev libxkbcommon-dev libudev-dev \
+            libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev \
+            libayatana-appindicator3-dev librsvg2-dev
       - name: Update stable Rust
         run: rustup update stable --no-self-update
-      - name: Test device profiles and package
+      - name: Build BudTune desktop app
         shell: pwsh
         env:
           RUSTUP_TOOLCHAIN: stable
