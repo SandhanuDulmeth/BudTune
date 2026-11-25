@@ -48,7 +48,7 @@ jobs:
         shell: pwsh
         env:
           RUSTUP_TOOLCHAIN: stable
-        run: ./build-desktop.ps1 -TestProfiles
+        run: ./build-desktop.ps1 -TestProfiles -NoBundle
       - uses: actions/upload-artifact@v4
         id: windows-artifact
         with:
@@ -67,19 +67,39 @@ jobs:
           github-artifact-id: ${{ steps.windows-artifact.outputs.artifact-id }}
           wait-for-completion-timeout-in-seconds: '2400'
           output-artifact-directory: signed
-      - name: Publish the signed executable
-        if: github.ref == 'refs/heads/main' && inputs.publish_signed == true
+      - name: Publish the Windows executable
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || inputs.publish_signed == true)
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
+          PUBLISH_SIGNED: ${{ inputs.publish_signed == true }}
         run: |
-          $file = 'signed/BudTune.exe'
-          $signature = Get-AuthenticodeSignature $file
-          if ($signature.Status -ne 'Valid') {
-            throw "Windows signature failed verification: $($signature.Status)"
+          $mainSha = gh api "repos/$env:GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha'
+          if ($LASTEXITCODE -ne 0) { throw 'Could not verify the current main commit.' }
+          if ($mainSha -ne $env:GITHUB_SHA) {
+            Write-Output 'A newer commit is on main. Skipping release publication for this build.'
+            return
           }
-          $tag = "v0.3.${{ github.run_number }}"
-          $sha = (Get-FileHash $file).Hash
-          $notes = "Free Windows x64 portable download. See CODE_SIGNING.md in the repository. Built from $env:GITHUB_SHA. SHA-256: $sha"
+
+          $file = 'BudTune.exe'
+          $status = 'Unsigned preview. Windows Smart App Control may block this download.'
+          if ($env:PUBLISH_SIGNED -eq 'true') {
+            $file = 'signed/BudTune.exe'
+            $signature = Get-AuthenticodeSignature -LiteralPath $file
+            if ($signature.Status -ne 'Valid') {
+              throw "Windows signature failed verification: $($signature.Status)"
+            }
+            $status = 'Windows Authenticode signature verified.'
+          }
+          $tag = "v0.3.$env:GITHUB_RUN_NUMBER"
+          $sha = (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash
+          $notes = @"
+          Free Windows x64 portable download.
+
+          $status
+
+          Built from $env:GITHUB_SHA.
+          SHA-256: $sha
+          "@
           gh release create $tag $file --latest --target $env:GITHUB_SHA --title "BudTune $tag for Windows" --notes $notes
-          exit $LASTEXITCODE
+          if ($LASTEXITCODE -ne 0) { throw "Could not publish GitHub Release $tag." }

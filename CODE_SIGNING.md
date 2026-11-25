@@ -1,8 +1,10 @@
 # Code signing policy
 
-BudTune 0.2.1 was published unsigned. A trusted Windows signature requires approval and credentials from a code-signing provider. BudTune has no active signing certificate at present.
+BudTune publishes unsigned Windows previews while signing provider approval is pending. Windows Smart App Control may block these downloads.
 
-The Windows workflow builds and tests every candidate. Publishing a new Windows release requires a manual workflow run from main with signing enabled. It submits the CI artifact for approval and checks that Windows reports a valid Authenticode signature before publishing. The release checksum is computed from the signed executable.
+App changes pushed to `main` trigger the Windows workflow. After the build and tests pass, it publishes the portable `BudTune.exe` as a GitHub Release and labels the unsigned preview in its release notes. Each release lists the SHA-256 checksum of the published executable.
+
+The `publish_signed` option in **Actions → Release Windows app → Run workflow** submits the artifact for signing approval. This option requires the SignPath credentials below and a valid Authenticode signature before publishing. Once signing is available, update the push workflow to require signing for future automatic releases.
 
 The repository owner, @SandhanuDulmeth, maintains the source and reviews pull requests. The repository owner is the intended signing approver. Future release approvers must use multifactor authentication and review the source and CI changes before approving a signing request.
 

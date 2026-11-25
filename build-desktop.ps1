@@ -28,8 +28,14 @@ try {
 }
 
 $uiDir = Join-Path $PSScriptRoot 'ui'
+$npm = if ($IsWindows) { 'npm.cmd' } else { 'npm' }
 if (!(Test-Path (Join-Path $uiDir 'node_modules'))) {
-    Invoke-Native npm @('--prefix', $uiDir, 'install')
+    Push-Location $uiDir
+    try {
+        Invoke-Native $npm @('ci')
+    } finally {
+        Pop-Location
+    }
 }
 
 $tauriBin = Join-Path $uiDir 'node_modules/.bin/tauri'
@@ -41,17 +47,20 @@ $tauriArgs = @('build')
 if ($NoBundle) {
     $tauriArgs += '--no-bundle'
 }
-Invoke-Native $tauriBin $tauriArgs
+Push-Location $PSScriptRoot
+try {
+    Invoke-Native $tauriBin $tauriArgs
+} finally {
+    Pop-Location
+}
 
 $out = Join-Path $PSScriptRoot 'dist'
 New-Item -ItemType Directory -Force $out | Out-Null
 
 if ($IsWindows) {
     $exe = Join-Path $PSScriptRoot 'src-tauri/target/release/budtune.exe'
-    if (Test-Path $exe) {
-        Copy-Item $exe (Join-Path $PSScriptRoot 'BudTune.exe') -Force
-        Copy-Item $exe (Join-Path $out 'BudTune.exe') -Force
-    }
+    Copy-Item -LiteralPath $exe -Destination (Join-Path $PSScriptRoot 'BudTune.exe') -Force
+    Copy-Item -LiteralPath $exe -Destination (Join-Path $out 'BudTune.exe') -Force
 } elseif ($IsMacOS) {
     $bundle = Join-Path $PSScriptRoot 'src-tauri/target/release/bundle/macos/BudTune.app'
     if (Test-Path $bundle) {
