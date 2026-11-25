@@ -2,9 +2,7 @@ name: Build Linux and macOS previews
 on:
   pull_request:
     paths: ['ui/**', 'src-tauri/**', 'build-desktop.ps1', '.github/workflows/desktop-preview.yml']
-  push:
-    branches: [main]
-    paths: ['ui/**', 'src-tauri/**', 'build-desktop.ps1', '.github/workflows/desktop-preview.yml']
+  workflow_call:
   workflow_dispatch:
 permissions:
   contents: read
@@ -38,7 +36,7 @@ jobs:
         shell: pwsh
         env:
           RUSTUP_TOOLCHAIN: stable
-        run: ./build-desktop.ps1 -TestProfiles
+        run: ./build-desktop.ps1 -TestProfiles -NoBundle:$IsLinux
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact }}

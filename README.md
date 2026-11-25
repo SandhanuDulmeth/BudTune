@@ -23,11 +23,11 @@ BudTune uses a device profile to show the controls available for the model and f
 
 | Platform | Download | Status |
 | --- | --- | --- |
-| Windows x64 | **[BudTune.exe](https://github.com/SandhanuDulmeth/BudTune/releases/latest/download/BudTune.exe)** · [SourceForge mirror](https://sourceforge.net/projects/budtune/files/) | Portable preview. The current public EXE is unsigned. Windows Smart App Control may block it. [Code signing status](CODE_SIGNING.md) |
-| Linux x64 | [Linux preview artifacts](https://github.com/SandhanuDulmeth/BudTune/actions/workflows/desktop-preview.yml?query=is%3Asuccess) | Built for Ubuntu 24.04 x64. Hardware testing welcome. |
-| macOS | [Apple Silicon preview artifacts](https://github.com/SandhanuDulmeth/BudTune/actions/workflows/desktop-preview.yml?query=is%3Asuccess) | Apple Silicon preview. The app bundle is ad-hoc signed and awaits notarization. |
+| Windows x64 | **[BudTune.exe](https://github.com/SandhanuDulmeth/BudTune/releases/latest/download/BudTune.exe)** | Portable preview. Windows Smart App Control may block unsigned builds. [Code signing status](CODE_SIGNING.md) |
+| Linux x64 | [BudTune-Linux-x64.tar.gz](https://github.com/SandhanuDulmeth/BudTune/releases/latest/download/BudTune-Linux-x64.tar.gz) | Ubuntu 24.04 x64 preview. |
+| macOS Apple Silicon | [BudTune-macOS-arm64.zip](https://github.com/SandhanuDulmeth/BudTune/releases/latest/download/BudTune-macOS-arm64.zip) | The app bundle is ad-hoc signed and awaits notarization. |
 
-For Linux or macOS, sign in to GitHub, open a successful run and choose your platform under **Artifacts**. Windows version history and SHA-256 checksums are on [GitHub Releases](https://github.com/SandhanuDulmeth/BudTune/releases).
+Package availability, version history, corresponding source, and SHA-256 checksums are on [GitHub Releases](https://github.com/SandhanuDulmeth/BudTune/releases).
 
 ## Device compatibility
 

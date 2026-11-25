@@ -46,6 +46,8 @@ if ($IsWindows) {
 $tauriArgs = @('build')
 if ($NoBundle) {
     $tauriArgs += '--no-bundle'
+} elseif ($IsMacOS) {
+    $tauriArgs += @('--bundles', 'app')
 }
 Push-Location $PSScriptRoot
 try {
@@ -63,14 +65,10 @@ if ($IsWindows) {
     Copy-Item -LiteralPath $exe -Destination (Join-Path $out 'BudTune.exe') -Force
 } elseif ($IsMacOS) {
     $bundle = Join-Path $PSScriptRoot 'src-tauri/target/release/bundle/macos/BudTune.app'
-    if (Test-Path $bundle) {
-        Invoke-Native ditto @('-c', '-k', '--keepParent', $bundle, (Join-Path $out 'BudTune-macOS-arm64.zip'))
-    }
+    Invoke-Native ditto @('-c', '-k', '--keepParent', $bundle, (Join-Path $out 'BudTune-macOS-arm64.zip'))
 } else {
     $bin = Join-Path $PSScriptRoot 'src-tauri/target/release/budtune'
-    if (Test-Path $bin) {
-        Copy-Item $bin (Join-Path $out 'BudTune') -Force
-        Invoke-Native chmod @('+x', (Join-Path $out 'BudTune'))
-        Invoke-Native tar @('-C', $out, '-czf', (Join-Path $out 'BudTune-Linux-x64.tar.gz'), 'BudTune')
-    }
+    Copy-Item -LiteralPath $bin -Destination (Join-Path $out 'BudTune') -Force
+    Invoke-Native chmod @('+x', (Join-Path $out 'BudTune'))
+    Invoke-Native tar @('-C', $out, '-czf', (Join-Path $out 'BudTune-Linux-x64.tar.gz'), 'BudTune')
 }
